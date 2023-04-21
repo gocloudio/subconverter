@@ -23,6 +23,10 @@ group = "🎥 NETFLIX"
 ruleset = "rules/DivineEngine/Surge/Ruleset/StreamingMedia/Video/Netflix.list"
 
 [[rulesets]]
+group = "🎥 NETFLIX"
+ruleset = "rules/openai.list"
+
+[[rulesets]]
 group = "🌍 国外媒体"
 ruleset = "rules/DivineEngine/Surge/Ruleset/StreamingMedia/Streaming.list"
 
@@ -73,6 +77,10 @@ ruleset = "rules/NobyDa/Surge/Download.list"
 [[rulesets]]
 group = "🎯 全球直连"
 ruleset = "[]GEOIP,CN"
+
+[[rulesets]]
+group = "🎯 全球直连"
+ruleset = "rules/private.list"
 
 [[rulesets]]
 group = "🐟 漏网之鱼"
