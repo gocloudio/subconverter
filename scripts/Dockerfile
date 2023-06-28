@@ -33,7 +33,7 @@ RUN git clone https://github.com/PerMalmberg/libcron --depth=1 && \
     cmake -DCMAKE_CXX_STANDARD=11 . && \
     make install -j $THREADS && \
     cd .. && \
-    git clone https://github.com/MetaCubeX/subconverter --depth=1 && \
+    git clone https://github.com/gocloudio/subconverter -b support-vless --depth=1 && \
     cd subconverter && \
     [ -n "$SHA" ] && sed -i 's/\(v[0-9]\.[0-9]\.[0-9]\)/\1-'"$SHA"'/' src/version.h;\
     cmake -DCMAKE_BUILD_TYPE=Release .
