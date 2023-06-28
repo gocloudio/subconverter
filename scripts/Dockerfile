@@ -1,4 +1,4 @@
-FROM alpine:3.16
+FROM alpine:3.16 as builder
 LABEL maintainer "tindy.it@gmail.com"
 ARG THREADS="4"
 ARG SHA=""
@@ -16,8 +16,8 @@ RUN apk add --no-cache --virtual .build-tools git g++ build-base linux-headers c
     install -d /usr/include/quickjs/ && \
     install -m644 quickjs/quickjs.h quickjs/quickjs-libc.h /usr/include/quickjs/ && \
     install -m644 quickjspp.hpp /usr/include && \
-    cd .. && \
-    git clone https://github.com/PerMalmberg/libcron --depth=1 && \
+    cd .. 
+RUN git clone https://github.com/PerMalmberg/libcron --depth=1 && \
     cd libcron && \
     git submodule update --init && \
     cmake -DCMAKE_BUILD_TYPE=Release . && \
@@ -33,10 +33,12 @@ RUN apk add --no-cache --virtual .build-tools git g++ build-base linux-headers c
     cmake -DCMAKE_CXX_STANDARD=11 . && \
     make install -j $THREADS && \
     cd .. && \
-    git clone https://github.com/tindy2013/subconverter --depth=1 && \
+    git clone https://github.com/MetaCubeX/subconverter --depth=1 && \
     cd subconverter && \
     [ -n "$SHA" ] && sed -i 's/\(v[0-9]\.[0-9]\.[0-9]\)/\1-'"$SHA"'/' src/version.h;\
-    cmake -DCMAKE_BUILD_TYPE=Release . && \
+    cmake -DCMAKE_BUILD_TYPE=Release .
+
+RUN cd subconverter && \
     make -j $THREADS && \
     mv subconverter /usr/bin && \
     mv base ../ && \
@@ -44,6 +46,12 @@ RUN apk add --no-cache --virtual .build-tools git g++ build-base linux-headers c
     rm -rf subconverter quickjspp libcron toml11 /usr/lib/lib*.a /usr/include/* /usr/local/include/lib*.a /usr/local/include/* && \
     apk add --no-cache --virtual subconverter-deps pcre2 libcurl yaml-cpp libevent && \
     apk del .build-tools .build-deps
+
+FROM alpine:3.16
+
+RUN apk add --no-cache curl rapidjson libevent pcre2 yaml-cpp
+COPY --from=builder /usr/bin/subconverter /usr/bin/subconverter
+COPY base /base
 
 # set entry
 WORKDIR /base
